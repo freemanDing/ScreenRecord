@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/btn_stop"
+        android:layout_width="@dimen/dip100"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dip10"
+        android:background="@drawable/selector_btn_bg6"
+        android:text="停止"
+        android:textColor="@color/all_white"
+        android:textSize="@dimen/dip20"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ff0303"
+        android:textSize="@dimen/dip18" />
+
+</LinearLayout>
