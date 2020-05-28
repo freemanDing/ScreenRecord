@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.commonrail.mft.decoder.managers.record.RecordService" />
+        <service android:name=".record.RecordService" />
     </application>
 
 </manifest>

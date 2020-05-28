@@ -2,6 +2,7 @@ package com.dgs.screenrecord.record;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.os.Build;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -21,6 +22,7 @@ import java.util.Date;
 
 /**
  * 录屏按钮
+ *
  * @author Administrator
  */
 public class RecordView {
@@ -54,7 +56,11 @@ public class RecordView {
     public void showRecordView() {
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         params = new WindowManager.LayoutParams();
-        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else {
+            params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        }
         //设置效果为背景透明.
         params.format = PixelFormat.RGBA_8888;
         //设置flags.不可聚焦及不可使用按钮对悬浮窗进行操控.
@@ -116,7 +122,7 @@ public class RecordView {
                 calendar.setTime(date);
                 String timeStr = sdf.format(date);
                 tv_time.setText(timeStr);
-                RecordView.this.timeCounter();
+                timeCounter();
             }
         }, 1000L);
     }

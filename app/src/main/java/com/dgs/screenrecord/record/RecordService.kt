@@ -1,4 +1,4 @@
-package com.commonrail.mft.decoder.managers.record
+package com.dgs.screenrecord.record
 
 import android.app.Service
 import android.content.BroadcastReceiver
@@ -13,7 +13,6 @@ import android.os.*
 import android.text.TextUtils
 import androidx.annotation.RequiresApi
 import com.dgs.screenrecord.record.PathConfig.Companion.RECORD_SCREEN
-import com.dgs.screenrecord.record.RecordView
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*

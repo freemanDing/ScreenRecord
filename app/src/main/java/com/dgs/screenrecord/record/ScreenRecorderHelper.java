@@ -15,8 +15,6 @@ import android.util.DisplayMetrics;
 import android.widget.Toast;
 
 
-import com.commonrail.mft.decoder.managers.record.RecordService;
-
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
