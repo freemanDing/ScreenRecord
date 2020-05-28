@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Suppress("DEPRECATION")
-    public fun changeRecordStatus(status: Int) {
+    fun changeRecordStatus(status: Int) {
         when (status) {
             ScreenRecorderHelper.RECORD_STATUS.STOP.ordinal -> {
                 recordStatus = ScreenRecorderHelper.RECORD_STATUS.STOP

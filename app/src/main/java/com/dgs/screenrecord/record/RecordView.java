@@ -21,6 +21,7 @@ import java.util.Date;
 
 /**
  * 录屏按钮
+ * @author Administrator
  */
 public class RecordView {
     private int statusBarHeight;
