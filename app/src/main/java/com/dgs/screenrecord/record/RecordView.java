@@ -56,11 +56,11 @@ public class RecordView {
     public void showRecordView() {
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         params = new WindowManager.LayoutParams();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        } else {
-            params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+//        } else {
+        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+//        }
         //设置效果为背景透明.
         params.format = PixelFormat.RGBA_8888;
         //设置flags.不可聚焦及不可使用按钮对悬浮窗进行操控.

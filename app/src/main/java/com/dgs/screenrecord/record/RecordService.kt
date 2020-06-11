@@ -13,6 +13,7 @@ import android.os.*
 import android.text.TextUtils
 import androidx.annotation.RequiresApi
 import com.dgs.screenrecord.record.PathConfig.Companion.RECORD_SCREEN
+import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -154,14 +155,14 @@ class RecordService : Service() {
         mediaRecorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
         mediaRecorder!!.setVideoEncodingBitRate(5 * 1024 * 1024)
         mediaRecorder!!.setVideoFrameRate(30)
-        try {
-            mediaRecorder!!.prepare()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+        mediaRecorder!!.prepare()
     }
 
     private fun createRecordDir(): String {
+        val file = File(fileDir)
+        if(!file.exists() || !file.isDirectory){
+            file.mkdir()
+        }
         val sdf = SimpleDateFormat("yyyy-MM-dd_HH_mm_ss")
         val time = sdf.format(Date(System.currentTimeMillis()))
         return "$fileDir$time.mp4"
@@ -180,7 +181,7 @@ class RecordService : Service() {
     }
 
     /**
-     * 希望在应用退出System.exit(0)前发个广播出来，直接退出导致录制的文件有问题，打不开
+     * 应用退出System.exit(0)前发个广播出来，停止录制
      */
     var receiver: BroadcastReceiver = object : BroadcastReceiver() {
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

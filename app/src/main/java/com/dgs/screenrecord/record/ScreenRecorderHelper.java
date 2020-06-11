@@ -103,7 +103,7 @@ public class ScreenRecorderHelper {
         switch (requestCode) {
             //屏幕显示
             case RECORD_REQUEST_CODE:
-                if (resultCode == activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK) {
                     mediaProjection = projectionManager.getMediaProjection(resultCode, data);
                     recordService.setMediaProject(mediaProjection);
                     boolean b = recordService.startRecord();
