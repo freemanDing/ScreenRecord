@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ScreenRecord</string>
+    <string name="not_support">不支持当前设备</string>
 </resources>

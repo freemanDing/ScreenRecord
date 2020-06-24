@@ -1,6 +1,5 @@
 package com.dgs.screenrecord
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -9,32 +8,30 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.dgs.screenrecord.record.ScreenRecorderHelper
+import com.dgs.screenrecord.record.IRecordScreen
+import com.dgs.screenrecord.record.PathConfig
+import com.dgs.screenrecord.record.RecordActivity
+import com.dgs.screenrecord.record.RecordStateManager
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), IRecordScreen {
 
     private var hasSystemAlertPermission = false
-    var srHelper: ScreenRecorderHelper? = null
-
-    companion object {
-        var recordStatus = ScreenRecorderHelper.RECORD_STATUS.STOP
-    }
+    private var recordStateManager: RecordStateManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            srHelper = ScreenRecorderHelper.getInstance(application)
-            srHelper!!.initRecordService(this)
-        }
+        recordStateManager = RecordStateManager.instance
+        recordStateManager?.registerView(this)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkSystemAlertPermission()
         } else {
             hasSystemAlertPermission = true
         }
+
         record_btn.setOnClickListener {
             if (hasSystemAlertPermission) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -49,21 +46,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        recordScreen()
+    }
+
+
+    fun recordScreen() {
+        if (recordStateManager!!.state === RecordStateManager.RECORDING) {
+            record_btn.setBackgroundResource(R.drawable.stop_record_screen)
+        } else {
+            record_btn.setBackgroundResource(R.drawable.record_screen)
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun onScreenRecord() {
-        if (recordStatus == ScreenRecorderHelper.RECORD_STATUS.RECORDING) {
-            srHelper!!.stopRecord(object : ScreenRecorderHelper.OnRecordStatusChangeListener {
-                override fun onChangeSuccess() {
-                    //当停止成功，做界面变化
-                    changeRecordStatus(ScreenRecorderHelper.RECORD_STATUS.STOP.ordinal)
-                }
 
-                override fun onChangeFailed() {}
-            })
-
-        } else if (recordStatus == ScreenRecorderHelper.RECORD_STATUS.STOP) {
-            srHelper!!.startRecord(this)
+        if (recordStateManager?.state === RecordStateManager.RECORDING) {
+            record_btn.setBackgroundResource(R.drawable.record_screen)
+            val stopIntent = Intent(PathConfig.ACTION_RECORD_SCREEN_STOP)
+            sendBroadcast(stopIntent)
+        } else {
+            startActivity(Intent(this, RecordActivity::class.java))
         }
     }
 
@@ -84,59 +89,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("MissingSuperCall")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == 1010) {
-            if (Build.VERSION.SDK_INT >= 23) { // Android6.0及以后需要动态申请权限
-                if (Settings.canDrawOverlays(this)) {
-                    // 弹出悬浮窗
-                    hasSystemAlertPermission = true
-                } else {
-                    hasSystemAlertPermission = false
-                    Toast.makeText(this@MainActivity, "权限授予失败，无法使用录屏功能", Toast.LENGTH_SHORT).show()
-                }
-            }
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                srHelper?.onActivityResult(
-                        this,
-                        requestCode,
-                        resultCode,
-                        data,
-                        object : ScreenRecorderHelper.OnRecordStatusChangeListener {
-                            override fun onChangeSuccess() {
-                                changeRecordStatus(ScreenRecorderHelper.RECORD_STATUS.RECORDING.ordinal)
-                            }
+    override fun onDestroy() {
+        super.onDestroy()
+        recordStateManager!!.unregisterView(this)
 
-                            override fun onChangeFailed() {
-                                changeRecordStatus(ScreenRecorderHelper.RECORD_STATUS.STOP.ordinal)
-                            }
-                        })
-            }
+    }
+
+
+    override fun onRecordStart() {
+        if (record_btn != null) {
+            record_btn.setBackgroundResource(R.drawable.stop_record_screen)
         }
     }
 
-    override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        srHelper?.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
+    override fun onRecordStop() {
+        if (record_btn != null) {
+            record_btn.setBackgroundResource(R.drawable.record_screen)
+        }
     }
 
-    @Suppress("DEPRECATION")
-    fun changeRecordStatus(status: Int) {
-        when (status) {
-            ScreenRecorderHelper.RECORD_STATUS.STOP.ordinal -> {
-                recordStatus = ScreenRecorderHelper.RECORD_STATUS.STOP
-                record_btn.setBackgroundResource(R.drawable.stop_record_screen)
-            }
-
-            ScreenRecorderHelper.RECORD_STATUS.RECORDING.ordinal -> {
-                recordStatus = ScreenRecorderHelper.RECORD_STATUS.RECORDING
-                record_btn.setBackgroundResource(R.drawable.record_screen)
-            }
+    override fun onRecording() {
+        if (record_btn != null) {
+            record_btn.setBackgroundResource(R.drawable.stop_record_screen)
         }
     }
 }

@@ -25,7 +25,18 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".record.RecordActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/dialogTranslate" />
+
         <service android:name=".record.RecordService" />
+
+        <receiver android:name=".record.RecordReceiver">
+            <intent-filter>
+                <action android:name="mft.recordScreenState" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

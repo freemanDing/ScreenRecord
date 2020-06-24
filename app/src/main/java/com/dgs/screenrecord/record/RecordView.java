@@ -2,7 +2,6 @@ package com.dgs.screenrecord.record;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
-import android.os.Build;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -14,16 +13,14 @@ import android.widget.TextView;
 
 import com.dgs.screenrecord.R;
 
-import androidx.annotation.NonNull;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import androidx.annotation.NonNull;
+
 /**
  * 录屏按钮
- *
- * @author Administrator
  */
 public class RecordView {
     private int statusBarHeight;
@@ -37,6 +34,7 @@ public class RecordView {
     private WindowManager windowManager;
     private final int heightPixels;
     private View btnStop;
+    private int recordStatus = RecordStateManager.START;
 
     public RecordView(Context context, Handler handler) {
         this.context = context;
@@ -56,11 +54,7 @@ public class RecordView {
     public void showRecordView() {
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         params = new WindowManager.LayoutParams();
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-//        } else {
         params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
-//        }
         //设置效果为背景透明.
         params.format = PixelFormat.RGBA_8888;
         //设置flags.不可聚焦及不可使用按钮对悬浮窗进行操控.
@@ -87,6 +81,7 @@ public class RecordView {
                             windowManager.removeView(recordView);
                         }
                     });
+                    recordStatus = RecordStateManager.STOP;
                     recordListener.stop();
                 }
             }
@@ -99,6 +94,10 @@ public class RecordView {
 
     public View getBtnStop() {
         return btnStop;
+    }
+
+    public int getRecordStatus() {
+        return recordStatus;
     }
 
     private void drag() {
@@ -117,14 +116,18 @@ public class RecordView {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (recordStatus == RecordStateManager.STOP) {
+                    return;
+                }
                 long time = calendar.getTime().getTime() + 1000;
                 Date date = new Date(time);
                 calendar.setTime(date);
                 String timeStr = sdf.format(date);
                 tv_time.setText(timeStr);
+
                 timeCounter();
             }
-        }, 1000L);
+        }, 1000);
     }
 
     @NonNull
