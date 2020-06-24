@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -105,6 +106,8 @@ class MainActivity : AppCompatActivity(), IRecordScreen {
     override fun onRecordStop() {
         if (record_btn != null) {
             record_btn.setBackgroundResource(R.drawable.record_screen)
+            Log.i("DGS", "保存路径：" + PathConfig.RECORD_SCREEN)
+            Toast.makeText(this, "保存路径：" + PathConfig.RECORD_SCREEN, Toast.LENGTH_LONG).show()
         }
     }
 

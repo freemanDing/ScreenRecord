@@ -132,10 +132,7 @@ class RecordService : Service() {
             mediaRecorder!!.start()
         } catch (e: Exception) {
             e.printStackTrace()
-        } finally {
-            release();
         }
-
     }
 
     private fun stopRecord() {
@@ -145,9 +142,9 @@ class RecordService : Service() {
             return
         }
         sendRecordState(RecordStateManager.STOP)
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            release()
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            release()
+        }
         if (recordView == null) {
             return
         }
@@ -180,11 +177,7 @@ class RecordService : Service() {
         mediaRecorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
         mediaRecorder!!.setVideoEncodingBitRate(5 * 1024 * 1024)
         mediaRecorder!!.setVideoFrameRate(30)
-        try {
-            mediaRecorder!!.prepare()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+        mediaRecorder!!.prepare()
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
