@@ -91,9 +91,8 @@ class RecordActivity : Activity() {
                     refuseList.add(grantResults[i])
                 }
             }
-            if (!refuseList.isEmpty()) {
-                finish()
-            }
+            //权限回调后 finish
+            finish()
         }
     }
 
